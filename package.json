@@ -2,12 +2,14 @@
   "name": "blog-md",
   "main": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "test": "bun test"
+  },
   "dependencies": {
-    "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.0",
-    "remark-math": "^6.0.0",
-    "remark-parse": "^11.0.0",
-    "unified": "^11.0.3"
+    "mdast-util-from-markdown": "^2.0.0",
+    "micromark": "^4.0.0",
+    "micromark-extension-gfm": "^3.0.0",
+    "micromark-extension-math": "^3.0.0"
   },
   "devDependencies": {
     "@qnighy/dedent": "^0.1.1",

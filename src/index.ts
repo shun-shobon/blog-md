@@ -1,4 +1,4 @@
-import { Root } from "mdast";
+import type { Root } from "mdast";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { gfm } from "micromark-extension-gfm";
 import { math } from "micromark-extension-math";

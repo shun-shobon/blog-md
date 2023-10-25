@@ -1,9 +1,21 @@
 {
   "name": "blog-md",
-  "main": "src/index.ts",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "bun test"
+    "build": "tsc -p tsconfig.build.json",
+    "test": "bun test",
+    "lint:tsc": "tsc --noEmit"
   },
   "dependencies": {
     "mdast-util-from-markdown": "^2.0.0",
@@ -14,9 +26,7 @@
   "devDependencies": {
     "@qnighy/dedent": "^0.1.1",
     "@types/mdast": "^4.0.2",
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "bun-types": "latest",
+    "typescript": "^5.2.2"
   }
 }

@@ -1,0 +1,20 @@
+{
+  "name": "blog-md",
+  "main": "src/index.ts",
+  "type": "module",
+  "dependencies": {
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.3"
+  },
+  "devDependencies": {
+    "@qnighy/dedent": "^0.1.1",
+    "@types/mdast": "^4.0.2",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

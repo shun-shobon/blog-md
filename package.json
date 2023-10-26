@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "0d": "^0.0.1",
+    "@shun-shobon/pipes": "^0.1.2",
     "@types/unist": "^3.0.1",
     "mdast-util-compact": "^5.0.0",
     "mdast-util-definitions": "^6.0.0",

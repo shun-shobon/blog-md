@@ -4,6 +4,7 @@ import type { Extension } from "mdast-util-from-markdown";
 import { isImageReference, isLinkReference } from "../check.js";
 import { visit } from "../visit.js";
 import { match } from "ts-pattern";
+import { unreachable } from "../error.js";
 
 export function resolveReference(): Extension {
   const transformer = (tree: Root) => {
@@ -14,10 +15,10 @@ export function resolveReference(): Extension {
       (node): node is LinkReference | ImageReference =>
         isLinkReference(node) || isImageReference(node),
       (node, idx, parent) => {
-        if (parent === undefined || idx === undefined) return;
+        if (parent === undefined || idx === undefined) unreachable();
 
         const def = definition(node.identifier);
-        if (def === undefined) return;
+        if (def === undefined) unreachable();
 
         const newNode = match(node)
           .when(

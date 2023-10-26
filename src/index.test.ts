@@ -6,7 +6,7 @@ describe("transform()", () => {
   test("basic", () => {
     const content = "Hello, world!";
 
-    const actural = transform(content);
+    const actual = transform(content);
     const expected = {
       type: "root",
       children: [
@@ -34,6 +34,6 @@ describe("transform()", () => {
       },
     } satisfies Root;
 
-    expect(actural).toEqual(expected);
+    expect(actual).toEqual(expected);
   });
 });

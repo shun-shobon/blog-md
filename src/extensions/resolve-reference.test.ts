@@ -5,7 +5,7 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 
 import { resolveReference } from "./resolve-reference.js";
 
-export function transform(content: string): Root {
+function transform(content: string): Root {
   return fromMarkdown(content, {
     mdastExtensions: [resolveReference()],
   });

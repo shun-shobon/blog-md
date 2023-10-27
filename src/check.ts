@@ -25,3 +25,7 @@ export function isParagraph(node: Mdast.Node): node is Mdast.Paragraph {
 export function isText(node: Mdast.Node): node is Mdast.Text {
   return node.type === "text";
 }
+
+export function isLink(node: Mdast.Node): node is Mdast.Link {
+  return node.type === "link";
+}

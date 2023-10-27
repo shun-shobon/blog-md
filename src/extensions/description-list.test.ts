@@ -5,7 +5,7 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 
 import { descriptionList } from "./description-list.js";
 
-export function transform(content: string): Root {
+function transform(content: string): Root {
   return fromMarkdown(content, {
     mdastExtensions: [descriptionList()],
   });

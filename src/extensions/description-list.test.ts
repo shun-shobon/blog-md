@@ -1,15 +1,8 @@
 import { dedent } from "@qnighy/dedent";
 import { describe, expect, it } from "bun:test";
-import type { Root, RootContent } from "mdast";
-import { fromMarkdown } from "mdast-util-from-markdown";
+import type { RootContent } from "mdast";
 
-import { descriptionList } from "./description-list.js";
-
-function transform(content: string): Root {
-  return fromMarkdown(content, {
-    mdastExtensions: [descriptionList()],
-  });
-}
+import { parse } from "../parse.js";
 
 describe("descriptionList", () => {
   it("should transform `list` to `descriptionList`", () => {
@@ -21,7 +14,7 @@ describe("descriptionList", () => {
         - details 3
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "descriptionList",
       children: [
@@ -155,7 +148,7 @@ describe("descriptionList", () => {
         - details 2
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "descriptionList",
       children: [
@@ -264,7 +257,7 @@ describe("descriptionList", () => {
       - term 3:
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
 
     expect(actual?.type).toBe("list");
   });

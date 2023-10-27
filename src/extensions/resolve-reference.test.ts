@@ -1,15 +1,8 @@
 import { dedent } from "@qnighy/dedent";
 import { describe, expect, it } from "bun:test";
-import type { Root, RootContent } from "mdast";
-import { fromMarkdown } from "mdast-util-from-markdown";
+import type { RootContent } from "mdast";
 
-import { resolveReference } from "./resolve-reference.js";
-
-function transform(content: string): Root {
-  return fromMarkdown(content, {
-    mdastExtensions: [resolveReference()],
-  });
-}
+import { parse } from "../parse.js";
 
 describe("resolveReference", () => {
   it("should resolve full `linkReference`", () => {
@@ -19,7 +12,7 @@ describe("resolveReference", () => {
       [link]: https://example.com
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [
@@ -59,7 +52,7 @@ describe("resolveReference", () => {
       [**link** is *awesome*]: https://example.com
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [
@@ -133,7 +126,7 @@ describe("resolveReference", () => {
       [lInK]: https://example.com
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [
@@ -173,7 +166,7 @@ describe("resolveReference", () => {
       [link]: https://example.com "title"
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [
@@ -213,7 +206,7 @@ describe("resolveReference", () => {
       [image]: https://example.com/image
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [
@@ -244,7 +237,7 @@ describe("resolveReference", () => {
       [**image** is *awesome*]: https://example.com/image
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [
@@ -275,7 +268,7 @@ describe("resolveReference", () => {
       [iMaGe]: https://example.com/image
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [
@@ -306,7 +299,7 @@ describe("resolveReference", () => {
       [image]: https://example.com/image "title"
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "paragraph",
       children: [

@@ -1,18 +1,8 @@
 import { dedent } from "@qnighy/dedent";
 import { describe, expect, it } from "bun:test";
-import type { List, Root, RootContent } from "mdast";
-import { fromMarkdown } from "mdast-util-from-markdown";
-import { gfmAutolinkLiteralFromMarkdown } from "mdast-util-gfm-autolink-literal";
-import { gfmAutolinkLiteral } from "micromark-extension-gfm-autolink-literal";
+import type { List, RootContent } from "mdast";
 
-import { embed } from "./embed.js";
-
-function transform(content: string): Root {
-  return fromMarkdown(content, {
-    extensions: [gfmAutolinkLiteral()],
-    mdastExtensions: [gfmAutolinkLiteralFromMarkdown(), embed()],
-  });
-}
+import { parse } from "../parse.js";
 
 describe("embed", () => {
   it("should transform orphan `link` to `embed`", () => {
@@ -20,7 +10,7 @@ describe("embed", () => {
       https://example.com
     `;
 
-    const actual = transform(content).children[0];
+    const actual = parse(content).children[0];
     const expected = {
       type: "embed",
       value: "https://example.com",
@@ -38,7 +28,7 @@ describe("embed", () => {
       - https://example.com
     `;
 
-    const actual = (transform(content).children[0] as List).children[0];
+    const actual = (parse(content).children[0] as List).children[0];
 
     expect(actual?.type).not.toBe("embed");
   });

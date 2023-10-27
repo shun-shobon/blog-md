@@ -4,9 +4,11 @@ import type {
   List,
   ListItem,
   Node,
+  Paragraph,
   Parent,
   PhrasingContent,
   Root,
+  Text,
 } from "mdast";
 import type { Extension } from "mdast-util-from-markdown";
 import type { Position } from "unist";
@@ -45,12 +47,8 @@ export function descriptionList(): Extension {
 
       const descriptionChildren = node.children.flatMap((listItem) => {
         const [termLike, ...detailsLikeList] = listItem.children;
-        if (!termLike || !isParagraph(termLike)) unreachable();
-        if (!detailsLikeList.every(isList)) unreachable();
 
-        const termLikeLastChild = termLike.children.at(-1);
-        if (!termLikeLastChild || !isText(termLikeLastChild)) unreachable();
-
+        const termLikeLastChild = termLike.children.at(-1) as Text;
         // termの最後の文字`:`を削除
         termLikeLastChild.value = termLikeLastChild.value.slice(0, -1);
         // termの最後のtextの位置情報を更新
@@ -107,7 +105,24 @@ export function descriptionList(): Extension {
   };
 }
 
-function isDescriptionListLike(node: Node): node is List {
+interface DescriptionListLike extends List {
+  ordered: false;
+  children: Array<DescriptionTermLike>;
+}
+
+interface DescriptionTermLike extends ListItem {
+  children: [DescriptionTermLikeParagraph, ...Array<List>];
+}
+
+interface DescriptionTermLikeParagraph extends Paragraph {
+  children: [...Array<PhrasingContent>, DescriptionTermLikeParagraphText];
+}
+
+interface DescriptionTermLikeParagraphText extends Text {
+  value: `${string}:`;
+}
+
+function isDescriptionListLike(node: Node): node is DescriptionListLike {
   if (!isList(node)) return false;
   if (node.ordered ?? true) return false;
 
@@ -123,7 +138,7 @@ function isDescriptionListLike(node: Node): node is List {
   return true;
 }
 
-function isDescriptionTermLike(node: Node): node is ListItem {
+function isDescriptionTermLike(node: Node): node is DescriptionTermLike {
   if (!isListItem(node)) return false;
 
   const [term, ...detailsList] = node.children;

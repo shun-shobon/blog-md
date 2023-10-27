@@ -15,10 +15,10 @@ export function resolveReference(): Extension {
       (node): node is LinkReference | ImageReference =>
         isLinkReference(node) || isImageReference(node),
       (node, idx, parent) => {
-        if (parent === undefined || idx === undefined) unreachable();
+        if (idx === undefined || !parent) unreachable();
 
         const def = definition(node.identifier);
-        if (def === undefined) unreachable();
+        if (!def) unreachable();
 
         const newNode = match(node)
           .when(

@@ -4,10 +4,11 @@ import { gfm } from "micromark-extension-gfm";
 import { math } from "micromark-extension-math";
 
 import { resolveReference } from "./extensions/resolve-reference.js";
+import { descriptionList } from "./extensions/description-list.js";
 
 export function transform(content: string): Root {
   return fromMarkdown(content, {
     extensions: [gfm(), math()],
-    mdastExtensions: [resolveReference()],
+    mdastExtensions: [resolveReference(), descriptionList()],
   });
 }

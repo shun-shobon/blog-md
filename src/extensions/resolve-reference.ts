@@ -1,10 +1,11 @@
 import type { Image, ImageReference, Link, LinkReference, Root } from "mdast";
 import { definitions } from "mdast-util-definitions";
 import type { Extension } from "mdast-util-from-markdown";
-import { isImageReference, isLinkReference } from "../check.js";
-import { visit } from "../visit.js";
 import { match } from "ts-pattern";
+
+import { isImageReference, isLinkReference } from "../check.js";
 import { unreachable } from "../error.js";
+import { visit } from "../visit.js";
 
 export function resolveReference(): Extension {
   const transformer = (tree: Root) => {
@@ -29,7 +30,7 @@ export function resolveReference(): Extension {
               position: linkRef.position,
               url: def.url,
               title: def.title,
-            })
+            }),
           )
           .when(
             isImageReference,
@@ -39,12 +40,12 @@ export function resolveReference(): Extension {
               position: imgRef.position,
               url: def.url,
               title: def.title,
-            })
+            }),
           )
           .exhaustive();
 
         parent.children[idx] = newNode;
-      }
+      },
     );
   };
 

@@ -1,10 +1,11 @@
-import { fromMarkdown } from "mdast-util-from-markdown";
-import { resolveReference } from "./resolve-reference.js";
-import { describe, expect, it } from "bun:test";
 import { dedent } from "@qnighy/dedent";
-import type { RootContent } from "mdast";
+import { describe, expect, it } from "bun:test";
+import type { Root, RootContent } from "mdast";
+import { fromMarkdown } from "mdast-util-from-markdown";
 
-export function transform(content: string) {
+import { resolveReference } from "./resolve-reference.js";
+
+export function transform(content: string): Root {
   return fromMarkdown(content, {
     mdastExtensions: [resolveReference()],
   });

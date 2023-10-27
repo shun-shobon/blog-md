@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { transform } from "./index.js";
 import type { Root } from "mdast";
+
+import { transform } from "./index.js";
 
 describe("transform()", () => {
   test("basic", () => {

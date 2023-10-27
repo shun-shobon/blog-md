@@ -1,9 +1,9 @@
-import { fromMarkdown } from "mdast-util-from-markdown";
-import { describe, expect, it } from "bun:test";
 import { dedent } from "@qnighy/dedent";
+import { describe, expect, it } from "bun:test";
+import type { Root, RootContent } from "mdast";
+import { fromMarkdown } from "mdast-util-from-markdown";
 
 import { descriptionList } from "./description-list.js";
-import type { Root, RootContent } from "mdast";
 
 export function transform(content: string): Root {
   return fromMarkdown(content, {

@@ -5,7 +5,7 @@ export function isLinkReference(node: Mdast.Node): node is Mdast.LinkReference {
 }
 
 export function isImageReference(
-  node: Mdast.Node
+  node: Mdast.Node,
 ): node is Mdast.ImageReference {
   return node.type === "imageReference";
 }

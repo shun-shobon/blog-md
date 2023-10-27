@@ -7,6 +7,6 @@ export const visit = unistVisit as <T extends Node>(
   visitor: (
     node: T,
     index: number | undefined,
-    parent: Parents | undefined
-  ) => void
+    parent: Parents | undefined,
+  ) => void,
 ) => void;

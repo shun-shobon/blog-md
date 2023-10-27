@@ -1,7 +1,7 @@
 import {
+  DescriptionDetails,
   DescriptionList,
   DescriptionTerm,
-  DescriptionDetails,
 } from "./extensions/description-list.ts";
 
 declare module "mdast" {

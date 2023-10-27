@@ -9,13 +9,12 @@ import type {
   Root,
 } from "mdast";
 import type { Extension } from "mdast-util-from-markdown";
-import { isList, isListItem, isParagraph, isText } from "../check.js";
-import { visit } from "../visit.js";
-import { unreachable } from "../error.js";
-import * as O from "../option.js";
-import { pipe } from "@shun-shobon/pipes";
-import { addColumn } from "../point.js";
 import type { Position } from "unist";
+
+import { isList, isListItem, isParagraph, isText } from "../check.js";
+import { unreachable } from "../error.js";
+import { addColumn } from "../point.js";
+import { visit } from "../visit.js";
 
 export interface DescriptionList extends Parent {
   type: "descriptionList";
@@ -110,7 +109,7 @@ export function descriptionList(): Extension {
 
 function isDescriptionListLike(node: Node): node is List {
   if (!isList(node)) return false;
-  if (node.ordered) return false;
+  if (node.ordered ?? true) return false;
 
   if (!node.children.every(isDescriptionTermLike)) return false;
 
@@ -129,7 +128,8 @@ function isDescriptionTermLike(node: Node): node is ListItem {
 
   const [term, ...detailsList] = node.children;
   if (!term || !isParagraph(term)) return false;
-  if (!detailsList.every((l) => isList(l) && !l.ordered)) return false;
+  if (!detailsList.every((l) => isList(l) && !(l.ordered ?? true)))
+    return false;
 
   const termLastChild = term.children.at(-1);
   if (!termLastChild || !isText(termLastChild)) return false;

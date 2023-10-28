@@ -24,6 +24,7 @@
     "lint-fix:prettier": "prettier --write ."
   },
   "dependencies": {
+    "github-slugger": "^2.0.0",
     "mdast-util-definitions": "^6.0.0",
     "mdast-util-from-markdown": "^2.0.0",
     "mdast-util-gfm-autolink-literal": "^2.0.0",

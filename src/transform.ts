@@ -1,3 +1,4 @@
+import GitHubSlugger from "github-slugger";
 import type * as Mdast from "mdast";
 import type { InlineMath, Math } from "mdast-util-math";
 
@@ -9,9 +10,18 @@ import type {
   DescriptionTerm,
 } from "./extensions/description-list.js";
 import type { Embed } from "./extensions/embed.js";
+import { astToString } from "./to-string.js";
+
+interface State {
+  slugger: GitHubSlugger;
+}
 
 export function transform(tree: Mdast.Root): AST.Root {
-  const children = transformChildren(tree);
+  const state: State = {
+    slugger: new GitHubSlugger(),
+  };
+
+  const children = transformChildren(state, tree);
 
   const root: AST.Root = {
     type: "root",
@@ -22,58 +32,61 @@ export function transform(tree: Mdast.Root): AST.Root {
 }
 
 // eslint-disable-next-line complexity
-function transformContent(node: Mdast.RootContent): AST.Content | undefined {
+function transformContent(
+  state: State,
+  node: Mdast.RootContent,
+): AST.Content | undefined {
   switch (node.type) {
     case "text":
-      return transformText(node);
+      return transformText(state, node);
     case "strong":
-      return transformStrong(node);
+      return transformStrong(state, node);
     case "emphasis":
-      return transformEmphasis(node);
+      return transformEmphasis(state, node);
     case "delete":
-      return transformDelete(node);
+      return transformDelete(state, node);
     case "inlineCode":
-      return transformInlineCode(node);
+      return transformInlineCode(state, node);
     case "inlineMath":
-      return transformInlineMath(node);
+      return transformInlineMath(state, node);
     case "link":
-      return transformLink(node);
+      return transformLink(state, node);
     case "image":
-      return transformImage(node);
+      return transformImage(state, node);
     case "break":
-      return transformBreak(node);
+      return transformBreak(state, node);
     case "thematicBreak":
-      return transformThematicBreak(node);
+      return transformThematicBreak(state, node);
     case "html":
-      return transformHtml(node);
+      return transformHtml(state, node);
     case "heading":
-      return transformHeading(node);
+      return transformHeading(state, node);
     case "paragraph":
-      return transformParagraph(node);
+      return transformParagraph(state, node);
     case "blockquote":
-      return transformBlockquote(node);
+      return transformBlockquote(state, node);
     case "list":
-      return transformList(node);
+      return transformList(state, node);
     case "listItem":
-      return transformListItem(node);
+      return transformListItem(state, node);
     case "descriptionList":
-      return transformDescriptionList(node);
+      return transformDescriptionList(state, node);
     case "descriptionTerm":
-      return transformDescriptionTerm(node);
+      return transformDescriptionTerm(state, node);
     case "descriptionDetails":
-      return transformDescriptionDetails(node);
+      return transformDescriptionDetails(state, node);
     case "table":
-      return transformTable(node);
+      return transformTable(state, node);
     case "tableRow":
-      return transformTableRow(node);
+      return transformTableRow(state, node);
     case "tableCell":
-      return transformTableCell(node);
+      return transformTableCell(state, node);
     case "code":
-      return transformCode(node);
+      return transformCode(state, node);
     case "math":
-      return transfromMath(node);
+      return transfromMath(state, node);
     case "embed":
-      return transformEmbed(node);
+      return transformEmbed(state, node);
     case "linkReference":
     case "imageReference":
     case "yaml":
@@ -89,13 +102,16 @@ function transformContent(node: Mdast.RootContent): AST.Content | undefined {
   }
 }
 
-function transformChildren(node: Mdast.Parent): Array<AST.Content> {
+function transformChildren(
+  state: State,
+  node: Mdast.Parent,
+): Array<AST.Content> {
   return node.children
-    .map(transformContent)
+    .map((n) => transformContent(state, n))
     .filter((x): x is AST.Content => x !== undefined);
 }
 
-function transformText(node: Mdast.Text): AST.Text {
+function transformText(_state: State, node: Mdast.Text): AST.Text {
   const text: AST.Text = {
     type: "text",
     value: node.value,
@@ -104,8 +120,11 @@ function transformText(node: Mdast.Text): AST.Text {
   return text;
 }
 
-function transformStrong(node: Mdast.Strong): AST.Strong | undefined {
-  const children = transformChildren(node);
+function transformStrong(
+  state: State,
+  node: Mdast.Strong,
+): AST.Strong | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const strong: AST.Strong = {
@@ -116,8 +135,11 @@ function transformStrong(node: Mdast.Strong): AST.Strong | undefined {
   return strong;
 }
 
-function transformEmphasis(node: Mdast.Emphasis): AST.Emphasis | undefined {
-  const children = transformChildren(node);
+function transformEmphasis(
+  state: State,
+  node: Mdast.Emphasis,
+): AST.Emphasis | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const emphasis: AST.Emphasis = {
@@ -128,8 +150,11 @@ function transformEmphasis(node: Mdast.Emphasis): AST.Emphasis | undefined {
   return emphasis;
 }
 
-function transformDelete(node: Mdast.Delete): AST.Delete | undefined {
-  const children = transformChildren(node);
+function transformDelete(
+  state: State,
+  node: Mdast.Delete,
+): AST.Delete | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const del: AST.Delete = {
@@ -140,7 +165,10 @@ function transformDelete(node: Mdast.Delete): AST.Delete | undefined {
   return del;
 }
 
-function transformInlineCode(node: Mdast.InlineCode): AST.InlineCode {
+function transformInlineCode(
+  _state: State,
+  node: Mdast.InlineCode,
+): AST.InlineCode {
   const inlineCode: AST.InlineCode = {
     type: "inlineCode",
     value: node.value,
@@ -149,7 +177,7 @@ function transformInlineCode(node: Mdast.InlineCode): AST.InlineCode {
   return inlineCode;
 }
 
-function transformInlineMath(node: InlineMath): AST.InlineMath {
+function transformInlineMath(_state: State, node: InlineMath): AST.InlineMath {
   const inlineMath: AST.InlineMath = {
     type: "inlineMath",
     value: node.value,
@@ -158,8 +186,8 @@ function transformInlineMath(node: InlineMath): AST.InlineMath {
   return inlineMath;
 }
 
-function transformLink(node: Mdast.Link): AST.Link | undefined {
-  const children = transformChildren(node);
+function transformLink(state: State, node: Mdast.Link): AST.Link | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const link: AST.Link = {
@@ -172,7 +200,7 @@ function transformLink(node: Mdast.Link): AST.Link | undefined {
   return link;
 }
 
-function transformImage(node: Mdast.Image): AST.Image {
+function transformImage(_state: State, node: Mdast.Image): AST.Image {
   const image: AST.Image = {
     type: "image",
     url: node.url,
@@ -183,7 +211,7 @@ function transformImage(node: Mdast.Image): AST.Image {
   return image;
 }
 
-function transformBreak(node: Mdast.Break): AST.Break {
+function transformBreak(_state: State, node: Mdast.Break): AST.Break {
   const br: AST.Break = {
     type: "break",
     position: node.position,
@@ -191,7 +219,10 @@ function transformBreak(node: Mdast.Break): AST.Break {
   return br;
 }
 
-function transformThematicBreak(node: Mdast.ThematicBreak): AST.ThematicBreak {
+function transformThematicBreak(
+  _state: State,
+  node: Mdast.ThematicBreak,
+): AST.ThematicBreak {
   const thematicBreak: AST.ThematicBreak = {
     type: "thematicBreak",
     position: node.position,
@@ -199,7 +230,7 @@ function transformThematicBreak(node: Mdast.ThematicBreak): AST.ThematicBreak {
   return thematicBreak;
 }
 
-function transformHtml(node: Mdast.Html): AST.Html {
+function transformHtml(_state: State, node: Mdast.Html): AST.Html {
   const html: AST.Html = {
     type: "html",
     value: node.value,
@@ -208,24 +239,32 @@ function transformHtml(node: Mdast.Html): AST.Html {
   return html;
 }
 
-function transformHeading(node: Mdast.Heading): AST.Heading | undefined {
-  const children = transformChildren(node);
+function transformHeading(
+  state: State,
+  node: Mdast.Heading,
+): AST.Heading | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
+
+  const plain = astToString(...children);
+  const id = state.slugger.slug(plain);
 
   const heading: AST.Heading = {
     type: "heading",
     level: node.depth,
-    // TODO: idとplainを実装
-    id: "",
-    plain: "",
+    id,
+    plain,
     children,
     position: node.position,
   };
   return heading;
 }
 
-function transformParagraph(node: Mdast.Paragraph): AST.Paragraph | undefined {
-  const children = transformChildren(node);
+function transformParagraph(
+  state: State,
+  node: Mdast.Paragraph,
+): AST.Paragraph | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const paragraph: AST.Paragraph = {
@@ -237,9 +276,10 @@ function transformParagraph(node: Mdast.Paragraph): AST.Paragraph | undefined {
 }
 
 function transformBlockquote(
+  state: State,
   node: Mdast.Blockquote,
 ): AST.Blockquote | undefined {
-  const children = transformChildren(node);
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const blockquote: AST.Blockquote = {
@@ -251,9 +291,10 @@ function transformBlockquote(
 }
 
 function transformList(
+  state: State,
   node: Mdast.List,
 ): AST.UnorderedList | AST.OrderedList | undefined {
-  const children = transformChildren(node);
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   if (node.ordered ?? false) {
@@ -274,8 +315,11 @@ function transformList(
   return unorderedList;
 }
 
-function transformListItem(node: Mdast.ListItem): AST.ListItem | undefined {
-  const children = transformChildren(node);
+function transformListItem(
+  state: State,
+  node: Mdast.ListItem,
+): AST.ListItem | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const listItem: AST.ListItem = {
@@ -287,9 +331,10 @@ function transformListItem(node: Mdast.ListItem): AST.ListItem | undefined {
 }
 
 function transformDescriptionList(
+  state: State,
   node: DescriptionList,
 ): AST.DescriptionList | undefined {
-  const children = transformChildren(node);
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const descriptionList: AST.DescriptionList = {
@@ -301,9 +346,10 @@ function transformDescriptionList(
 }
 
 function transformDescriptionTerm(
+  state: State,
   node: DescriptionTerm,
 ): AST.DescriptionTerm | undefined {
-  const children = transformChildren(node);
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const descriptionTerm: AST.DescriptionTerm = {
@@ -315,9 +361,10 @@ function transformDescriptionTerm(
 }
 
 function transformDescriptionDetails(
+  state: State,
   node: DescriptionDetails,
 ): AST.DescriptionDetails | undefined {
-  const children = transformChildren(node);
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const descriptionDetails: AST.DescriptionDetails = {
@@ -328,8 +375,11 @@ function transformDescriptionDetails(
   return descriptionDetails;
 }
 
-function transformTable(node: Mdast.Table): AST.Table | undefined {
-  const children = transformChildren(node);
+function transformTable(
+  state: State,
+  node: Mdast.Table,
+): AST.Table | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const table: AST.Table = {
@@ -346,8 +396,11 @@ function transformTable(node: Mdast.Table): AST.Table | undefined {
   return table;
 }
 
-function transformTableRow(node: Mdast.TableRow): AST.TableRow | undefined {
-  const children = transformChildren(node);
+function transformTableRow(
+  state: State,
+  node: Mdast.TableRow,
+): AST.TableRow | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const tableRow: AST.TableRow = {
@@ -358,8 +411,11 @@ function transformTableRow(node: Mdast.TableRow): AST.TableRow | undefined {
   return tableRow;
 }
 
-function transformTableCell(node: Mdast.TableCell): AST.TableCell | undefined {
-  const children = transformChildren(node);
+function transformTableCell(
+  state: State,
+  node: Mdast.TableCell,
+): AST.TableCell | undefined {
+  const children = transformChildren(state, node);
   if (children.length === 0) return undefined;
 
   const tableCell: AST.TableCell = {
@@ -370,7 +426,7 @@ function transformTableCell(node: Mdast.TableCell): AST.TableCell | undefined {
   return tableCell;
 }
 
-function transformCode(node: Mdast.Code): AST.Code {
+function transformCode(_state: State, node: Mdast.Code): AST.Code {
   const infoStr = `${node.lang ?? ""} ${node.meta ?? ""}`;
 
   const [langDiff, filename] = infoStr.split(":", 2);
@@ -396,7 +452,7 @@ function transformCode(node: Mdast.Code): AST.Code {
   return code;
 }
 
-function transfromMath(node: Math): AST.Math {
+function transfromMath(_state: State, node: Math): AST.Math {
   const math: AST.Math = {
     type: "math",
     value: node.value,
@@ -405,7 +461,7 @@ function transfromMath(node: Math): AST.Math {
   return math;
 }
 
-function transformEmbed(node: Embed): AST.Embed {
+function transformEmbed(_state: State, node: Embed): AST.Embed {
   const embed: AST.Embed = {
     type: "embed",
     value: node.value,

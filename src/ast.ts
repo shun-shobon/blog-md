@@ -10,12 +10,14 @@ export interface Parent extends Node {
   children: Array<Content>;
 }
 
+export type Nodes = Root | Content;
 export type Content =
   | Text
   | Strong
   | Emphasis
   | Delete
   | InlineCode
+  | InlineMath
   | Link
   | Image
   | Break
@@ -34,6 +36,7 @@ export type Content =
   | TableRow
   | TableCell
   | Code
+  | Math
   | Embed;
 
 export interface Text extends Literal {
@@ -54,6 +57,10 @@ export interface Delete extends Parent {
 
 export interface InlineCode extends Literal {
   type: "inlineCode";
+}
+
+export interface InlineMath extends Literal {
+  type: "inlineMath";
 }
 
 export interface Link extends Parent {
@@ -102,6 +109,7 @@ export interface UnorderedList extends Parent {
 
 export interface OrderedList extends Parent {
   type: "orderedList";
+  start: number;
 }
 
 export interface ListItem extends Parent {
@@ -140,7 +148,14 @@ export interface Code extends Literal {
   diff: boolean;
 }
 
-export interface Embed extends Node {
+export interface Math extends Literal {
+  type: "math";
+}
+
+export interface Embed extends Literal {
   type: "embed";
-  url: string;
+}
+
+export interface Root extends Parent {
+  type: "root";
 }

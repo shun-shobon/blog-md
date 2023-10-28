@@ -35,6 +35,7 @@ export type Content =
   | Table
   | TableRow
   | TableCell
+  | FootnoteReference
   | Code
   | Math
   | Embed;
@@ -141,6 +142,18 @@ export interface TableCell extends Parent {
   type: "tableCell";
 }
 
+export interface FootnoteDefinition extends Parent {
+  type: "footnoteDefinition";
+  index: number;
+  count: number;
+}
+
+export interface FootnoteReference extends Node {
+  type: "footnoteReference";
+  footnoteIndex: number;
+  referenceIndex: number;
+}
+
 export interface Code extends Literal {
   type: "code";
   lang?: string | undefined;
@@ -158,4 +171,5 @@ export interface Embed extends Literal {
 
 export interface Root extends Parent {
   type: "root";
+  footnotes: Array<FootnoteDefinition>;
 }

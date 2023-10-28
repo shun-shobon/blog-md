@@ -29,3 +29,9 @@ export function isText(node: Mdast.Node): node is Mdast.Text {
 export function isLink(node: Mdast.Node): node is Mdast.Link {
   return node.type === "link";
 }
+
+export function isFootnoteDefinition(
+  node: Mdast.Node,
+): node is Mdast.FootnoteDefinition {
+  return node.type === "footnoteDefinition";
+}

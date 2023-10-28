@@ -12,8 +12,20 @@ import type {
 import type { Embed } from "../parse/extensions/embed.js";
 import { astToString } from "./to-string.js";
 
-export interface State {
+interface State {
   slugger: GitHubSlugger;
+  footnoteDefMap: Map<string, Mdast.FootnoteDefinition>;
+  usedFootnoteDefs: Map<string, AST.FootnoteDefinition>;
+}
+
+export function newState(
+  footnoteDefMap: Map<string, Mdast.FootnoteDefinition>,
+): State {
+  return {
+    slugger: new GitHubSlugger(),
+    footnoteDefMap,
+    usedFootnoteDefs: new Map(),
+  };
 }
 
 export function convertChildren(
@@ -75,6 +87,8 @@ export function convertNode(
       return convertTableRow(state, node);
     case "tableCell":
       return convertTableCell(state, node);
+    case "footnoteReference":
+      return convertFootnoteReference(state, node);
     case "code":
       return convertCode(state, node);
     case "math":
@@ -86,10 +100,7 @@ export function convertNode(
     case "yaml":
       throw new UnreachableError();
     case "definition":
-      return undefined;
     case "footnoteDefinition":
-    case "footnoteReference":
-      // TODO: 脚注を実装
       return undefined;
   }
 }
@@ -404,6 +415,46 @@ function convertTableCell(
     position: node.position,
   };
   return tableCell;
+}
+
+function convertFootnoteReference(
+  state: State,
+  node: Mdast.FootnoteReference,
+): AST.FootnoteReference {
+  const usedDef = state.usedFootnoteDefs.get(node.identifier);
+
+  if (usedDef) {
+    usedDef.count += 1;
+
+    const footnoteReference: AST.FootnoteReference = {
+      type: "footnoteReference",
+      footnoteIndex: usedDef.index,
+      referenceIndex: usedDef.count,
+      position: node.position,
+    };
+    return footnoteReference;
+  }
+
+  const def = state.footnoteDefMap.get(node.identifier);
+  if (!def) unreachable();
+
+  const footnoteIndex = state.usedFootnoteDefs.size;
+  const newDef: AST.FootnoteDefinition = {
+    type: "footnoteDefinition",
+    index: footnoteIndex,
+    count: 1,
+    children: convertChildren(state, def),
+    position: def.position,
+  };
+  state.usedFootnoteDefs.set(node.identifier, newDef);
+
+  const footnoteReference: AST.FootnoteReference = {
+    type: "footnoteReference",
+    footnoteIndex,
+    referenceIndex: 1,
+    position: node.position,
+  };
+  return footnoteReference;
 }
 
 function convertCode(_state: State, node: Mdast.Code): AST.Code {

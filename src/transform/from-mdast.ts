@@ -2,97 +2,89 @@ import GitHubSlugger from "github-slugger";
 import type * as Mdast from "mdast";
 import type { InlineMath, Math } from "mdast-util-math";
 
-import type * as AST from "./ast.js";
-import { unreachable } from "./error.js";
+import type * as AST from "../ast.js";
+import { unreachable, UnreachableError } from "../error.js";
 import type {
   DescriptionDetails,
   DescriptionList,
   DescriptionTerm,
-} from "./extensions/description-list.js";
-import type { Embed } from "./extensions/embed.js";
+} from "../parse/extensions/description-list.js";
+import type { Embed } from "../parse/extensions/embed.js";
 import { astToString } from "./to-string.js";
 
-interface State {
+export interface State {
   slugger: GitHubSlugger;
 }
 
-export function transform(tree: Mdast.Root): AST.Root {
-  const state: State = {
-    slugger: new GitHubSlugger(),
-  };
-
-  const children = transformChildren(state, tree);
-
-  const root: AST.Root = {
-    type: "root",
-    children,
-    position: tree.position,
-  };
-  return root;
+export function convertChildren(
+  state: State,
+  node: Mdast.Parent,
+): Array<AST.Content> {
+  return node.children
+    .map((n) => convertNode(state, n))
+    .filter((x): x is AST.Content => x !== undefined);
 }
 
 // eslint-disable-next-line complexity
-function transformContent(
+export function convertNode(
   state: State,
   node: Mdast.RootContent,
 ): AST.Content | undefined {
   switch (node.type) {
     case "text":
-      return transformText(state, node);
+      return convertText(state, node);
     case "strong":
-      return transformStrong(state, node);
+      return convertStrong(state, node);
     case "emphasis":
-      return transformEmphasis(state, node);
+      return convertEmphasis(state, node);
     case "delete":
-      return transformDelete(state, node);
+      return convertDelete(state, node);
     case "inlineCode":
-      return transformInlineCode(state, node);
+      return convertInlineCode(state, node);
     case "inlineMath":
-      return transformInlineMath(state, node);
+      return convertInlineMath(state, node);
     case "link":
-      return transformLink(state, node);
+      return convertLink(state, node);
     case "image":
-      return transformImage(state, node);
+      return convertImage(state, node);
     case "break":
-      return transformBreak(state, node);
+      return convertBreak(state, node);
     case "thematicBreak":
-      return transformThematicBreak(state, node);
+      return convertThematicBreak(state, node);
     case "html":
-      return transformHtml(state, node);
+      return convertHtml(state, node);
     case "heading":
-      return transformHeading(state, node);
+      return convertHeading(state, node);
     case "paragraph":
-      return transformParagraph(state, node);
+      return convertParagraph(state, node);
     case "blockquote":
-      return transformBlockquote(state, node);
+      return convertBlockquote(state, node);
     case "list":
-      return transformList(state, node);
+      return convertList(state, node);
     case "listItem":
-      return transformListItem(state, node);
+      return convertListItem(state, node);
     case "descriptionList":
-      return transformDescriptionList(state, node);
+      return convertDescriptionList(state, node);
     case "descriptionTerm":
-      return transformDescriptionTerm(state, node);
+      return convertDescriptionTerm(state, node);
     case "descriptionDetails":
-      return transformDescriptionDetails(state, node);
+      return convertDescriptionDetails(state, node);
     case "table":
-      return transformTable(state, node);
+      return convertTable(state, node);
     case "tableRow":
-      return transformTableRow(state, node);
+      return convertTableRow(state, node);
     case "tableCell":
-      return transformTableCell(state, node);
+      return convertTableCell(state, node);
     case "code":
-      return transformCode(state, node);
+      return convertCode(state, node);
     case "math":
-      return transfromMath(state, node);
+      return convertMath(state, node);
     case "embed":
-      return transformEmbed(state, node);
+      return convertEmbed(state, node);
     case "linkReference":
     case "imageReference":
     case "yaml":
-      unreachable();
-    // unreachable() はエラーを投げるので、ここには到達しない
-    // eslint-disable-next-line no-fallthrough
+      throw new UnreachableError();
     case "definition":
       return undefined;
     case "footnoteDefinition":
@@ -102,16 +94,7 @@ function transformContent(
   }
 }
 
-function transformChildren(
-  state: State,
-  node: Mdast.Parent,
-): Array<AST.Content> {
-  return node.children
-    .map((n) => transformContent(state, n))
-    .filter((x): x is AST.Content => x !== undefined);
-}
-
-function transformText(_state: State, node: Mdast.Text): AST.Text {
+function convertText(_state: State, node: Mdast.Text): AST.Text {
   const text: AST.Text = {
     type: "text",
     value: node.value,
@@ -120,11 +103,11 @@ function transformText(_state: State, node: Mdast.Text): AST.Text {
   return text;
 }
 
-function transformStrong(
+function convertStrong(
   state: State,
   node: Mdast.Strong,
 ): AST.Strong | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const strong: AST.Strong = {
@@ -135,11 +118,11 @@ function transformStrong(
   return strong;
 }
 
-function transformEmphasis(
+function convertEmphasis(
   state: State,
   node: Mdast.Emphasis,
 ): AST.Emphasis | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const emphasis: AST.Emphasis = {
@@ -150,11 +133,11 @@ function transformEmphasis(
   return emphasis;
 }
 
-function transformDelete(
+function convertDelete(
   state: State,
   node: Mdast.Delete,
 ): AST.Delete | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const del: AST.Delete = {
@@ -165,7 +148,7 @@ function transformDelete(
   return del;
 }
 
-function transformInlineCode(
+function convertInlineCode(
   _state: State,
   node: Mdast.InlineCode,
 ): AST.InlineCode {
@@ -177,7 +160,7 @@ function transformInlineCode(
   return inlineCode;
 }
 
-function transformInlineMath(_state: State, node: InlineMath): AST.InlineMath {
+function convertInlineMath(_state: State, node: InlineMath): AST.InlineMath {
   const inlineMath: AST.InlineMath = {
     type: "inlineMath",
     value: node.value,
@@ -186,8 +169,8 @@ function transformInlineMath(_state: State, node: InlineMath): AST.InlineMath {
   return inlineMath;
 }
 
-function transformLink(state: State, node: Mdast.Link): AST.Link | undefined {
-  const children = transformChildren(state, node);
+function convertLink(state: State, node: Mdast.Link): AST.Link | undefined {
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const link: AST.Link = {
@@ -200,7 +183,7 @@ function transformLink(state: State, node: Mdast.Link): AST.Link | undefined {
   return link;
 }
 
-function transformImage(_state: State, node: Mdast.Image): AST.Image {
+function convertImage(_state: State, node: Mdast.Image): AST.Image {
   const image: AST.Image = {
     type: "image",
     url: node.url,
@@ -211,7 +194,7 @@ function transformImage(_state: State, node: Mdast.Image): AST.Image {
   return image;
 }
 
-function transformBreak(_state: State, node: Mdast.Break): AST.Break {
+function convertBreak(_state: State, node: Mdast.Break): AST.Break {
   const br: AST.Break = {
     type: "break",
     position: node.position,
@@ -219,7 +202,7 @@ function transformBreak(_state: State, node: Mdast.Break): AST.Break {
   return br;
 }
 
-function transformThematicBreak(
+function convertThematicBreak(
   _state: State,
   node: Mdast.ThematicBreak,
 ): AST.ThematicBreak {
@@ -230,7 +213,7 @@ function transformThematicBreak(
   return thematicBreak;
 }
 
-function transformHtml(_state: State, node: Mdast.Html): AST.Html {
+function convertHtml(_state: State, node: Mdast.Html): AST.Html {
   const html: AST.Html = {
     type: "html",
     value: node.value,
@@ -239,11 +222,11 @@ function transformHtml(_state: State, node: Mdast.Html): AST.Html {
   return html;
 }
 
-function transformHeading(
+function convertHeading(
   state: State,
   node: Mdast.Heading,
 ): AST.Heading | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const plain = astToString(...children);
@@ -260,11 +243,11 @@ function transformHeading(
   return heading;
 }
 
-function transformParagraph(
+function convertParagraph(
   state: State,
   node: Mdast.Paragraph,
 ): AST.Paragraph | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const paragraph: AST.Paragraph = {
@@ -275,11 +258,11 @@ function transformParagraph(
   return paragraph;
 }
 
-function transformBlockquote(
+function convertBlockquote(
   state: State,
   node: Mdast.Blockquote,
 ): AST.Blockquote | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const blockquote: AST.Blockquote = {
@@ -290,11 +273,11 @@ function transformBlockquote(
   return blockquote;
 }
 
-function transformList(
+function convertList(
   state: State,
   node: Mdast.List,
 ): AST.UnorderedList | AST.OrderedList | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   if (node.ordered ?? false) {
@@ -315,11 +298,11 @@ function transformList(
   return unorderedList;
 }
 
-function transformListItem(
+function convertListItem(
   state: State,
   node: Mdast.ListItem,
 ): AST.ListItem | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const listItem: AST.ListItem = {
@@ -330,11 +313,11 @@ function transformListItem(
   return listItem;
 }
 
-function transformDescriptionList(
+function convertDescriptionList(
   state: State,
   node: DescriptionList,
 ): AST.DescriptionList | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const descriptionList: AST.DescriptionList = {
@@ -345,11 +328,11 @@ function transformDescriptionList(
   return descriptionList;
 }
 
-function transformDescriptionTerm(
+function convertDescriptionTerm(
   state: State,
   node: DescriptionTerm,
 ): AST.DescriptionTerm | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const descriptionTerm: AST.DescriptionTerm = {
@@ -360,11 +343,11 @@ function transformDescriptionTerm(
   return descriptionTerm;
 }
 
-function transformDescriptionDetails(
+function convertDescriptionDetails(
   state: State,
   node: DescriptionDetails,
 ): AST.DescriptionDetails | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const descriptionDetails: AST.DescriptionDetails = {
@@ -375,11 +358,8 @@ function transformDescriptionDetails(
   return descriptionDetails;
 }
 
-function transformTable(
-  state: State,
-  node: Mdast.Table,
-): AST.Table | undefined {
-  const children = transformChildren(state, node);
+function convertTable(state: State, node: Mdast.Table): AST.Table | undefined {
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const table: AST.Table = {
@@ -396,11 +376,11 @@ function transformTable(
   return table;
 }
 
-function transformTableRow(
+function convertTableRow(
   state: State,
   node: Mdast.TableRow,
 ): AST.TableRow | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const tableRow: AST.TableRow = {
@@ -411,11 +391,11 @@ function transformTableRow(
   return tableRow;
 }
 
-function transformTableCell(
+function convertTableCell(
   state: State,
   node: Mdast.TableCell,
 ): AST.TableCell | undefined {
-  const children = transformChildren(state, node);
+  const children = convertChildren(state, node);
   if (children.length === 0) return undefined;
 
   const tableCell: AST.TableCell = {
@@ -426,7 +406,7 @@ function transformTableCell(
   return tableCell;
 }
 
-function transformCode(_state: State, node: Mdast.Code): AST.Code {
+function convertCode(_state: State, node: Mdast.Code): AST.Code {
   const infoStr = `${node.lang ?? ""} ${node.meta ?? ""}`;
 
   const [langDiff, filename] = infoStr.split(":", 2);
@@ -452,7 +432,7 @@ function transformCode(_state: State, node: Mdast.Code): AST.Code {
   return code;
 }
 
-function transfromMath(_state: State, node: Math): AST.Math {
+function convertMath(_state: State, node: Math): AST.Math {
   const math: AST.Math = {
     type: "math",
     value: node.value,
@@ -461,7 +441,7 @@ function transfromMath(_state: State, node: Math): AST.Math {
   return math;
 }
 
-function transformEmbed(_state: State, node: Embed): AST.Embed {
+function convertEmbed(_state: State, node: Embed): AST.Embed {
   const embed: AST.Embed = {
     type: "embed",
     value: node.value,

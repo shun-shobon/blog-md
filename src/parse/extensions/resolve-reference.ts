@@ -3,8 +3,8 @@ import { definitions } from "mdast-util-definitions";
 import type { Extension } from "mdast-util-from-markdown";
 import { match } from "ts-pattern";
 
+import { unreachable } from "../../error.js";
 import { isImageReference, isLinkReference } from "../check.js";
-import { unreachable } from "../error.js";
 import { visit } from "../visit.js";
 
 export function resolveReference(): Extension {

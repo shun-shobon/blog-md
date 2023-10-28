@@ -2,8 +2,8 @@ import {
   DescriptionDetails,
   DescriptionList,
   DescriptionTerm,
-} from "./extensions/description-list.ts";
-import { Embed } from "./extensions/embed.ts";
+} from "./parse/extensions/description-list.ts";
+import { Embed } from "./parse/extensions/embed.ts";
 
 declare module "mdast" {
   interface RootContentMap {

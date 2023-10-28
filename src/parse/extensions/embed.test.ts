@@ -2,7 +2,7 @@ import { dedent } from "@qnighy/dedent";
 import { describe, expect, it } from "bun:test";
 import type { List, RootContent } from "mdast";
 
-import { parse } from "../parse.js";
+import { parse } from "../index.js";
 
 describe("embed", () => {
   it("should transform orphan `link` to `embed`", () => {

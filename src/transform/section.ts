@@ -10,11 +10,11 @@ function traverse(tree: Parent, level: number): void {
   if (level > 6) return;
 
   let index: number | undefined = undefined;
-  while (index !== undefined ? index > tree.children.length : true) {
+  while (index !== undefined ? index < tree.children.length : true) {
     const startIdx = findNodeAfter(tree, index, isHeadingOfLevel(level));
     if (startIdx === undefined) return;
 
-    const endIdx = findNodeAfter(tree, startIdx, isHeadingOfLevel(level - 1));
+    const endIdx = findNodeAfter(tree, startIdx, isHeadingOfLevel(level));
 
     const children = tree.children.slice(startIdx, endIdx) as [
       Heading,

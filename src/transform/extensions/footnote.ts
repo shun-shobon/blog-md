@@ -1,9 +1,9 @@
 import type * as Mdast from "mdast";
 
 import type * as AST from "../../ast.js";
+import { isFootnoteDefinition } from "../../check.js";
 import { unreachable } from "../../error.js";
-import { isFootnoteDefinition } from "../../parse/check.js";
-import { visit } from "../../parse/visit.js";
+import { visit } from "../../visit.js";
 import type { After, Before, Extension, MdastHandler } from "../extension.js";
 
 export function footnote(): Extension {

@@ -1,9 +1,16 @@
 import type { Position } from "unist";
 
-import type { Content, Heading, Node, Parent, Section } from "../ast.js";
+import type { Content, Heading, Node, Parent, Section } from "../../ast.js";
+import type { After, Extension } from "../extension.js";
 
-export function sectionize(tree: Parent): void {
-  traverse(tree, 1);
+export function section(): Extension {
+  const after: After = (tree) => {
+    traverse(tree, 1);
+  };
+
+  return {
+    after,
+  };
 }
 
 function traverse(tree: Parent, level: number): void {

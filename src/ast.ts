@@ -38,7 +38,8 @@ export type Content =
   | FootnoteReference
   | Code
   | Math
-  | Embed;
+  | Embed
+  | Section;
 
 export interface Text extends Literal {
   type: "text";
@@ -167,6 +168,11 @@ export interface Math extends Literal {
 
 export interface Embed extends Literal {
   type: "embed";
+}
+
+export interface Section extends Parent {
+  type: "section";
+  children: [Heading, ...Array<Content>];
 }
 
 export interface Root extends Parent {

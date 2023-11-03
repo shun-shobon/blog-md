@@ -37,7 +37,11 @@
     "micromark-extension-gfm-strikethrough": "^2.0.0",
     "micromark-extension-gfm-table": "^2.0.0",
     "micromark-extension-math": "^3.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "remark-parse": "^11.0.0",
     "ts-pattern": "^5.0.5",
+    "unified": "^11.0.4",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {

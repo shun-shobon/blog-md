@@ -1,13 +1,22 @@
 import type { Link, Literal, Node, Paragraph, Root } from "mdast";
 import type { Extension } from "mdast-util-from-markdown";
+import type { Plugin } from "unified";
 
-import { isLink, isParagraph, isText } from "../../check.js";
-import { visit } from "../../visit.js";
+import { isLink, isParagraph, isText } from "../check.js";
+import { visit } from "../visit.js";
 
 export interface Embed extends Literal {
   type: "embed";
 }
 
+export const remarkEmbed: Plugin = function () {
+  const data = this.data();
+
+  data.fromMarkdownExtensions ??= [];
+  data.fromMarkdownExtensions.push(embed());
+};
+
+// TODO: プライベート関数にする
 export function embed(): Extension {
   const transformer = (tree: Root) => {
     visit(tree, isEmbedLike, (node, idx, parent) => {

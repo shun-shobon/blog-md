@@ -3,7 +3,7 @@ import type {
   DescriptionDetails,
   DescriptionList,
   DescriptionTerm,
-} from "../../parse/extensions/description-list.js";
+} from "../../remark/description-list.js";
 import type { Extension, MdastHandler } from "../extension.js";
 
 export function descriptionList(): Extension {

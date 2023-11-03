@@ -2,10 +2,18 @@ import type { Image, ImageReference, Link, LinkReference, Root } from "mdast";
 import { definitions } from "mdast-util-definitions";
 import type { Extension } from "mdast-util-from-markdown";
 import { match } from "ts-pattern";
+import type { Plugin } from "unified";
 
-import { isImageReference, isLinkReference } from "../../check.js";
-import { unreachable } from "../../error.js";
-import { visit } from "../../visit.js";
+import { isImageReference, isLinkReference } from "../check.js";
+import { unreachable } from "../error.js";
+import { visit } from "../visit.js";
+
+export const remarkResolveReference: Plugin = function () {
+  const data = this.data();
+
+  data.fromMarkdownExtensions ??= [];
+  data.fromMarkdownExtensions.push(resolveReference());
+};
 
 export function resolveReference(): Extension {
   const transformer = (tree: Root) => {

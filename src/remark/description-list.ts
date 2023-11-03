@@ -11,12 +11,13 @@ import type {
   Text,
 } from "mdast";
 import type { Extension } from "mdast-util-from-markdown";
+import type { Plugin } from "unified";
 import type { Position } from "unist";
 
-import { isList, isListItem, isParagraph, isText } from "../../check.js";
-import { unreachable } from "../../error.js";
-import { addColumn } from "../../point.js";
-import { visit } from "../../visit.js";
+import { isList, isListItem, isParagraph, isText } from "../check.js";
+import { unreachable } from "../error.js";
+import { addColumn } from "../point.js";
+import { visit } from "../visit.js";
 
 export interface DescriptionList extends Parent {
   type: "descriptionList";
@@ -39,6 +40,13 @@ export interface DescriptionContentMap {
 }
 export type DescriptionContent =
   DescriptionContentMap[keyof DescriptionContentMap];
+
+export const remarkDescriptionList: Plugin = function () {
+  const data = this.data();
+
+  data.fromMarkdownExtensions ??= [];
+  data.fromMarkdownExtensions.push(descriptionList());
+};
 
 export function descriptionList(): Extension {
   const transformer = (tree: Root) => {

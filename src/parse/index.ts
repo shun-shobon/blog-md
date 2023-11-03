@@ -10,9 +10,9 @@ import { gfmStrikethrough } from "micromark-extension-gfm-strikethrough";
 import { gfmTable } from "micromark-extension-gfm-table";
 import { math } from "micromark-extension-math";
 
-import { descriptionList } from "./extensions/description-list.js";
-import { embed } from "./extensions/embed.js";
-import { resolveReference } from "./extensions/resolve-reference.js";
+import { embed } from "../remark/embed.js";
+import { descriptionList } from "../remark/description-list.js";
+import { resolveReference } from "../remark/resolve-reference.js";
 
 export function parse(content: string): Root {
   return fromMarkdown(content, {

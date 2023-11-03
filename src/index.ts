@@ -3,11 +3,20 @@ import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 
+import {
+  remarkDescriptionList,
+  remarkEmbed,
+  remarkResolveReference,
+} from "./remark/index.js";
+
 export async function parseMarkdown(source: string): Promise<never> {
   const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
+    .use(remarkResolveReference)
+    .use(remarkDescriptionList)
+    .use(remarkEmbed)
     .freeze();
 
   const _file = await processor.process(source);

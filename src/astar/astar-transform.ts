@@ -2,6 +2,7 @@ import type * as Mdast from "mdast";
 import type { Plugin } from "unified";
 
 import type * as Astar from "./ast.js";
+import { handlers as defaultHandlers } from "./handlers/index.js";
 
 declare module "unified" {
   interface Data {
@@ -43,7 +44,7 @@ export type Handler<T extends Mdast.Node> = (
 export type Handlers = Record<string, Handler<any>>;
 
 function createState(additionalHandlers: Handlers): State {
-  const handlers: Handlers = { ...additionalHandlers };
+  const handlers: Handlers = { ...defaultHandlers, ...additionalHandlers };
 
   const transformOne = (node: Mdast.Node): Astar.Content | undefined => {
     const handler = handlers[node.type];

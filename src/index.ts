@@ -6,6 +6,7 @@ import { unified } from "unified";
 import {
   astarDescriptionList,
   astarEmbed,
+  astarSection,
   astarTransform,
 } from "./astar/index.js";
 import {
@@ -25,6 +26,7 @@ export async function parseMarkdown(source: string): Promise<never> {
     .use(astarTransform)
     .use(astarDescriptionList)
     .use(astarEmbed)
+    .use(astarSection)
     .freeze();
 
   const _file = await processor.process(source);

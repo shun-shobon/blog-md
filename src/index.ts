@@ -1,4 +1,5 @@
 import type * as Mdast from "mdast";
+import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
@@ -9,6 +10,7 @@ import type * as Astar from "./astar/ast.js";
 import {
   astarDescriptionList,
   astarEmbed,
+  astarFrontmatter,
   astarSection,
   astarTransform,
 } from "./astar/index.js";
@@ -27,10 +29,12 @@ export function createProcessor(): Processor<
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
+    .use(remarkFrontmatter, ["yaml"])
     .use(remarkResolveReference)
     .use(remarkDescriptionList)
     .use(remarkEmbed)
     .use(astarTransform)
+    .use(astarFrontmatter)
     .use(astarDescriptionList)
     .use(astarEmbed)
     .use(astarSection)

@@ -26,12 +26,14 @@
   "dependencies": {
     "github-slugger": "^2.0.0",
     "mdast-util-definitions": "^6.0.0",
+    "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
     "remark-parse": "^11.0.0",
     "ts-pattern": "^5.0.5",
     "unified": "^11.0.4",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@qnighy/dedent": "^0.1.1",

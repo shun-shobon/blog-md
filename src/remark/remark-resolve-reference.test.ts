@@ -2,7 +2,7 @@ import { dedent } from "@qnighy/dedent";
 import { describe, expect, it } from "bun:test";
 import type { RootContent } from "mdast";
 
-import { parse } from "../parse/index.js";
+import { parse } from "./utils.js";
 
 describe("resolveReference", () => {
   it("should resolve full `linkReference`", () => {

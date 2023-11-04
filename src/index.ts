@@ -23,7 +23,7 @@ export function createProcessor(): Processor<
   Mdast.Root,
   Astar.Root
 > {
-  return unified()
+  const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
@@ -35,13 +35,13 @@ export function createProcessor(): Processor<
     .use(astarEmbed)
     .use(astarSection)
     .freeze();
+
+  return processor;
 }
 
-export async function parseMarkdown(source: string): Promise<never> {
+export async function parseMarkdown(source: string): Promise<Astar.Root> {
   const processor = createProcessor();
 
-  const _file = await processor.process(source);
-
-  // TODO: parse markdown
-  throw new Error("Not implemented");
+  const ast = await processor.run(processor.parse(source));
+  return ast;
 }

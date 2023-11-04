@@ -24,8 +24,13 @@ export const astarTransform: Plugin<
 
     const children = state.transformAll(tree);
 
+    const footnotes = Array.from(state.astarFootnoteDefinition.values()).sort(
+      (a, b) => a.index - b.index,
+    );
+
     const root: Astar.Root = {
       type: "root",
+      footnotes,
       children,
       position: tree.position,
     };

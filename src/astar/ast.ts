@@ -177,6 +177,5 @@ export interface Section extends Parent {
 
 export interface Root extends Parent {
   type: "root";
-  footnotes?: Array<FootnoteDefinition>;
+  footnotes: Array<FootnoteDefinition>;
 }
-export type RootData = Omit<Root, "type" | "data" | "children" | "position">;

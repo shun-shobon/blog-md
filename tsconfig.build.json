@@ -4,6 +4,7 @@
     "types": [],
     "rootDir": "./src",
     "outDir": "./dist",
+    "incremental": false,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true

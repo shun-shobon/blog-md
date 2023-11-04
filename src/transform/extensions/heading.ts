@@ -1,7 +1,7 @@
 import GitHubSlugger from "github-slugger";
 import type * as Mdast from "mdast";
 
-import type * as AST from "../../ast.js";
+import type * as AST from "../../astar/ast.js";
 import type { Extension, MdastHandler } from "../extension.js";
 import { astToString } from "../to-string.js";
 

@@ -1,3 +1,3 @@
-export * from "./description-list.js";
-export * from "./embed.js";
-export * from "./resolve-reference.js";
+export * from "./remark-description-list.js";
+export * from "./remark-embed.js";
+export * from "./remark-resolve-reference.js";

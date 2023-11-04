@@ -1,9 +1,9 @@
-import type * as AST from "../../ast.js";
+import type * as AST from "../../astar/ast.js";
 import type {
   DescriptionDetails,
   DescriptionList,
   DescriptionTerm,
-} from "../../remark/description-list.js";
+} from "../../remark/remark-description-list.js";
 import type { Extension, MdastHandler } from "../extension.js";
 
 export function descriptionList(): Extension {

@@ -1,6 +1,6 @@
 import type * as Mdast from "mdast";
 
-import type * as AST from "../ast.js";
+import type * as AST from "../astar/ast.js";
 
 export interface Extension {
   before?: Before;

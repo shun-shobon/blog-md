@@ -1,4 +1,4 @@
-import type { Literal, Node, Parent } from "../ast.js";
+import type { Literal, Node, Parent } from "../astar/ast.js";
 
 export function astToString(...nodes: Array<Node>): string {
   return nodesToString(nodes);

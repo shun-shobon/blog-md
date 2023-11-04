@@ -1,6 +1,6 @@
 import type * as Mdast from "mdast";
 
-import type * as AST from "../../ast.js";
+import type * as AST from "../../astar/ast.js";
 import { isFootnoteDefinition } from "../../check.js";
 import { unreachable } from "../../error.js";
 import { visit } from "../../visit.js";

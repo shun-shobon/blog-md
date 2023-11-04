@@ -1,7 +1,7 @@
 import type * as Mdast from "mdast";
 import { match, P } from "ts-pattern";
 
-import type * as AST from "../../ast.js";
+import type * as AST from "../../astar/ast.js";
 import { unreachable } from "../../error.js";
 import type { Extension, MdastHandler } from "../extension.js";
 

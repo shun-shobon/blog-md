@@ -1,6 +1,12 @@
 import type { Position } from "unist";
 
-import type { Content, Heading, Node, Parent, Section } from "../../ast.js";
+import type {
+  Content,
+  Heading,
+  Node,
+  Parent,
+  Section,
+} from "../../astar/ast.js";
 import type { After, Extension } from "../extension.js";
 
 export function section(): Extension {

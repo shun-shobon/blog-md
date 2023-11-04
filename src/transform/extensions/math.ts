@@ -1,6 +1,6 @@
 import type { InlineMath, Math } from "mdast-util-math";
 
-import type * as AST from "../../ast.js";
+import type * as AST from "../../astar/ast.js";
 import type { Extension, MdastHandler } from "../extension.js";
 
 export function math(): Extension {

@@ -6,12 +6,14 @@ import remarkParse from "remark-parse";
 import type { Processor } from "unified";
 import { unified } from "unified";
 
-import type * as Astar from "./astar/ast.js";
 import {
+  type Article,
+  astarArticle,
   astarDescriptionList,
   astarEmbed,
   astarFrontmatter,
   astarSection,
+  astarToc,
   astarTransform,
 } from "./astar/index.js";
 import {
@@ -20,11 +22,7 @@ import {
   remarkResolveReference,
 } from "./remark/index.js";
 
-export function createProcessor(): Processor<
-  Mdast.Root,
-  Mdast.Root,
-  Astar.Root
-> {
+export function createProcessor(): Processor<Mdast.Root, Mdast.Root, Article> {
   const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -38,12 +36,14 @@ export function createProcessor(): Processor<
     .use(astarDescriptionList)
     .use(astarEmbed)
     .use(astarSection)
+    .use(astarToc)
+    .use(astarArticle)
     .freeze();
 
   return processor;
 }
 
-export async function parseMarkdown(source: string): Promise<Astar.Root> {
+export async function parseMarkdown(source: string): Promise<Article> {
   const processor = createProcessor();
 
   const ast = await processor.run(processor.parse(source));

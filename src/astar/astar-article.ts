@@ -11,7 +11,7 @@ const Frontmatter = v.object({
 });
 type Frontmatter = v.Input<typeof Frontmatter>;
 
-interface Article extends Omit<Root, "type">, Frontmatter {
+export interface Article extends Omit<Root, "type">, Frontmatter {
   type: "article";
 }
 

@@ -1,3 +1,4 @@
+import { Temporal } from "temporal-polyfill";
 import type { Plugin } from "unified";
 import * as v from "valibot";
 
@@ -9,7 +10,16 @@ const Frontmatter = v.object({
   emoji: v.string('Value of "emoji" must be a string.'),
   tags: v.array(v.string(), 'Value of "tags" must be an array of strings.'),
   published: v.boolean('Value of "published" must be a boolean.'),
-  publishedAt: v.string('Value of "publishedAt" must be a date.'),
+  publishedAt: v.string('Value of "publishedAt" must be a date.', [
+    v.custom((s) => {
+      try {
+        Temporal.PlainDateTime.from(s);
+        return true;
+      } catch {
+        return false;
+      }
+    }, 'Value of "publishedAt" must be a valid date.'),
+  ]),
 });
 type Frontmatter = v.Input<typeof Frontmatter>;
 

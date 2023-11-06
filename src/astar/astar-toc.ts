@@ -1,6 +1,7 @@
 import type { Plugin } from "unified";
 
-import type { Node, Parent, Root, Section } from "./ast.js";
+import type { Node, Parent, Root } from "./ast.js";
+import { isSection } from "./check.js";
 
 declare module "unified" {
   interface Data {
@@ -8,7 +9,7 @@ declare module "unified" {
   }
 }
 
-interface Toc extends Node {
+export interface Toc extends Node {
   type: "toc";
   plain: string;
   id: string;
@@ -34,8 +35,4 @@ function process(tree: Parent): Array<Toc> {
       children: process(section),
     }),
   );
-}
-
-function isSection(node: Node): node is Section {
-  return node.type === "section";
 }

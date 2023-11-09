@@ -41,7 +41,7 @@
     "@qnighy/dedent": "^0.1.1",
     "@shun-shobon/eslint-config-base": "^1.0.10",
     "@types/mdast": "^4.0.2",
-    "@types/unist": "^3.0.1",
+    "@types/unist": "^3.0.2",
     "bun-types": "latest",
     "eslint": "^8.53.0",
     "npm-run-all": "^4.1.5",

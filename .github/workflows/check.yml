@@ -1,0 +1,79 @@
+name: Check
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup | Get tool version
+        id: tool-version
+        run: |
+          while read -r line; do
+            echo "${line%% *}=${line##* }" >> $GITHUB_OUTPUT
+          done <.tool-versions
+
+      - name: Setup | Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ steps.tool-version.outputs.bun }}
+
+      - name: Setup | Install dependencies
+        run: bun install
+
+      - name: Run | ESLint
+        run: bun run lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup | Get tool version
+        id: tool-version
+        run: |
+          while read -r line; do
+            echo "${line%% *}=${line##* }" >> $GITHUB_OUTPUT
+          done <.tool-versions
+
+      - name: Setup | Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ steps.tool-version.outputs.bun }}
+
+      - name: Setup | Install dependencies
+        run: bun install
+
+      - name: Run | Build
+        run: bun run build
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup | Get tool version
+        id: tool-version
+        run: |
+          while read -r line; do
+            echo "${line%% *}=${line##* }" >> $GITHUB_OUTPUT
+          done <.tool-versions
+
+      - name: Setup | Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ steps.tool-version.outputs.bun }}
+
+      - name: Setup | Install dependencies
+        run: bun install
+
+      - name: Run | Test
+        run: bun run test

@@ -179,3 +179,20 @@ export interface Root extends Parent {
   type: "root";
   footnotes: Array<FootnoteDefinition>;
 }
+
+export interface Toc extends Node {
+  type: "toc";
+  plain: string;
+  id: string;
+  children: Array<Toc>;
+}
+
+export interface Article extends Omit<Root, "type"> {
+  type: "article";
+  title: Heading;
+  emoji: string;
+  tags: Array<string>;
+  published: boolean;
+  publishedAt: string;
+  toc: Array<Toc>;
+}

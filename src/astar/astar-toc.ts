@@ -1,19 +1,12 @@
 import type { Plugin } from "unified";
 
-import type { Node, Parent, Root } from "./ast.js";
+import type { Parent, Root, Toc } from "./ast.js";
 import { isSection } from "./check.js";
 
 declare module "unified" {
   interface Data {
     toc?: Array<Toc>;
   }
-}
-
-export interface Toc extends Node {
-  type: "toc";
-  plain: string;
-  id: string;
-  children: Array<Toc>;
 }
 
 export const astarToc: Plugin<Array<never>, Root> = function () {

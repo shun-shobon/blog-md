@@ -2,8 +2,7 @@ import { Temporal } from "temporal-polyfill";
 import type { Plugin } from "unified";
 import * as v from "valibot";
 
-import type { Heading, Root, Section } from "./ast.js";
-import type { Toc } from "./astar-toc.js";
+import type { Article, Root, Section, Toc } from "./ast.js";
 import { isSection } from "./check.js";
 
 const Frontmatter = v.object({
@@ -22,12 +21,6 @@ const Frontmatter = v.object({
   ]),
 });
 type Frontmatter = v.Input<typeof Frontmatter>;
-
-export interface Article extends Omit<Root, "type">, Frontmatter {
-  type: "article";
-  title: Heading;
-  toc: Array<Toc>;
-}
 
 export const astarArticle: Plugin<Array<never>, Root, Article> = function () {
   return (tree) => {

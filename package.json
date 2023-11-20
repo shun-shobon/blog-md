@@ -49,5 +49,8 @@
     "prettier": "^3.1.0",
     "typescript": "^5.2.2",
     "unist-util-inspect": "8.0.0"
-  }
+  },
+  "trustedDependencies": [
+    "sharp"
+  ]
 }

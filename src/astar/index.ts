@@ -3,6 +3,7 @@ export * from "./astar-article.js";
 export * from "./astar-description-list.js";
 export * from "./astar-embed.js";
 export * from "./astar-frontmatter.js";
+export * from "./astar-local-asset-loader.js";
 export * from "./astar-section.js";
 export * from "./astar-toc.js";
 export * from "./astar-transform.js";

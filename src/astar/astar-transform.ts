@@ -3,7 +3,7 @@ import type * as Mdast from "mdast";
 import type { Plugin } from "unified";
 
 import { isFootnoteDefinition } from "../check.js";
-import { visit } from "../visit.js";
+import { visit } from "../remark/visit.js";
 import type * as Astar from "./ast.js";
 import { defaultHandlers } from "./default-handlers/index.js";
 

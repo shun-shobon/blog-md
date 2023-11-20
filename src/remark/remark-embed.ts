@@ -3,7 +3,7 @@ import type { Extension } from "mdast-util-from-markdown";
 import type { Plugin } from "unified";
 
 import { isLink, isParagraph, isText } from "../check.js";
-import { visit } from "../visit.js";
+import { visit } from "./visit.js";
 
 export interface Embed extends Literal {
   type: "embed";

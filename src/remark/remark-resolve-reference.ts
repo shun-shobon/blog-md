@@ -6,7 +6,7 @@ import type { Plugin } from "unified";
 
 import { isImageReference, isLinkReference } from "../check.js";
 import { unreachable } from "../error.js";
-import { visit } from "../visit.js";
+import { visit } from "./visit.js";
 
 export const remarkResolveReference: Plugin = function () {
   const data = this.data();

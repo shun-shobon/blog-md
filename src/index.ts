@@ -12,6 +12,7 @@ import {
   astarDescriptionList,
   astarEmbed,
   astarFrontmatter,
+  astarLocalImageLoader,
   astarSection,
   astarToc,
   astarTransform,
@@ -22,7 +23,13 @@ import {
   remarkResolveReference,
 } from "./remark/index.js";
 
-export function createProcessor(): Processor<Mdast.Root, Mdast.Root, Article> {
+export type Options = {
+  assetOutputDir: string;
+};
+
+export function createProcessor({
+  assetOutputDir,
+}: Options): Processor<Mdast.Root, Mdast.Root, Article> {
   const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -35,17 +42,11 @@ export function createProcessor(): Processor<Mdast.Root, Mdast.Root, Article> {
     .use(astarFrontmatter)
     .use(astarDescriptionList)
     .use(astarEmbed)
+    .use(astarLocalImageLoader, { assetOutputDir })
     .use(astarSection)
     .use(astarToc)
     .use(astarArticle)
     .freeze();
 
   return processor;
-}
-
-export async function parseMarkdown(source: string): Promise<Article> {
-  const processor = createProcessor();
-
-  const ast = await processor.run(processor.parse(source));
-  return ast;
 }

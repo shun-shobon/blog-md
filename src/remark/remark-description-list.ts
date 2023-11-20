@@ -17,7 +17,7 @@ import type { Position } from "unist";
 import { isList, isListItem, isParagraph, isText } from "../check.js";
 import { unreachable } from "../error.js";
 import { addColumn } from "../point.js";
-import { visit } from "../visit.js";
+import { visit } from "./visit.js";
 
 export interface DescriptionList extends Parent {
   type: "descriptionList";

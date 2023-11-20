@@ -20,6 +20,7 @@ export type Content =
   | InlineMath
   | Link
   | Image
+  | LocalImage
   | Break
   | ThematicBreak
   | Html
@@ -76,6 +77,15 @@ export interface Image extends Node {
   alt: string;
   url: string;
   title?: string | undefined;
+}
+
+export interface LocalImage extends Node {
+  type: "localImage";
+  alt: string;
+  id: string;
+  ext: string;
+  title?: string | undefined;
+  size?: [number, number] | undefined;
 }
 
 export interface Break extends Node {

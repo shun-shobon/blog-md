@@ -1,5 +1,4 @@
 import * as crypto from "node:crypto";
-import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -65,17 +64,11 @@ export const astarLocalImageLoader: Plugin<
   };
 };
 
-function getHash(filepath: string): Promise<string> {
-  const stream = fsSync.createReadStream(filepath);
+async function getHash(filepath: string): Promise<string> {
+  const file = await fs.readFile(filepath);
+  const hash = crypto.createHash("sha256").update(file);
 
-  return new Promise((resolve, reject) => {
-    const hash = crypto.createHash("sha256");
-
-    hash.once("finish", () => resolve(hash.digest("hex")));
-    stream.once("error", reject);
-
-    stream.pipe(hash as unknown as WritableStream<unknown>);
-  });
+  return hash.digest("hex");
 }
 
 async function getSize(
